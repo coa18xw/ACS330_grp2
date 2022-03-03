@@ -1,0 +1,5 @@
+<launch>
+	<remap from="/cv_camera_node/camera_info" to="/camera_rect/image_raw" />
+	<remap from="/cv_camera_node/image_raw" to="/camera_rect/image_rect" />
+    <node name="cv_camera_node" pkg="cv_camera" type="cv_camera_node" />
+</launch>
