@@ -1,1 +1,2 @@
 # run sudo apt-get install ros-melodic-apriltag-ros
+# and extract these folders into src
