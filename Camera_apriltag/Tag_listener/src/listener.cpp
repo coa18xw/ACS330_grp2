@@ -13,7 +13,7 @@
 // msg->detections[i].id to get
 	 {
 	
-	int32_t Tag_ID[3];
+	std::vector<int> Tag_ID[12];
 	int counter =0;
 	ROS_INFO("test = %d", msg->detections[counter].id);
 	
@@ -28,7 +28,14 @@
 		counter++;
 	}
 	*/
-   }
+	for(int counter=0; counter>12; counter++)
+		{
+		Tag_ID[counter] = msg->detections[counter].id;
+		const char* Tag_IP = lookup(Tag_ID[counter]);
+		ROS_INFO("Tag id: [%d] ", &Tag_ID[counter]);
+        	ROS_INFO("Tag ip: [%S]", &Tag_IP);
+		}
+   	}
    
    int main(int argc, char **argv)
    {
