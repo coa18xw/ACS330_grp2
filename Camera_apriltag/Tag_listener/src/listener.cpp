@@ -13,7 +13,7 @@
 // msg->detections[i].id to get
 	 {
 	
-	int32_t Tag_ID[4];
+	int32_t Tag_ID[3];
 	int counter =0;
 	ROS_INFO("test = %d", msg->detections[counter].id);
 	
