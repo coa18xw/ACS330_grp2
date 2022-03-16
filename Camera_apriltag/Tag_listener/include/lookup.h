@@ -1,4 +1,4 @@
-const char* lookup(int id)
+const char* lookup(int32_t id)
 {
 	const char *table[2];
 	table[0] = "143.167.45.210";

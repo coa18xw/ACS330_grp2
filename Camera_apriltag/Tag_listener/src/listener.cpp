@@ -4,35 +4,28 @@
    #include "std_msgs/MultiArrayDimension.h"
    #include "std_msgs/Int32MultiArray.h"
 
-   #include "/home/uos/catkin_ws/devel/include/apriltag_ros/AprilTagDetectionArray.h"
+   #include "apriltag_ros/AprilTagDetectionArray.h"
    #include "lookup.h"
   
-  
-  
+   
+   
    void tag_detectionsCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
-// msg->detections[0].id to get
-
-   {
-	int counter=0;
-	// 
-	//ROS_INFO("Tag id:[%ld]" ,msg->detections[0].id);
-
-	/*for(std::vector<apriltag_ros::AprilTagDetectionArray>::const_iterator it = id->detections.begin(); it != id->detections.end(); ++it) // iterator that moves memory sizes of<type>
+// msg->detections[i].id to get
+	 {
+	
+	int32_t Tag_ID[4];
+	int counter =0;
+	ROS_INFO("test = %d", msg->detections[counter].id);
+	
+	
+/*
+	for(std::vector<apriltag_ros::AprilTagDetectionArray>::const_iterator it = msg->detections.begin(); it != msg->detections.end(); ++it) // iterator that moves memory sizes of<type>
 	{
-		Id[counter] = *it.detections.id;
-		const char* Tag_IP = lookup(Id[counter]);
-		ROS_INFO("Tag id: [%d]", &Id[counter]);
+		Tag_ID[counter] = *it.detections[counter].id;
+		const char* Tag_IP = lookup(Tag_ID[counter]);
+		ROS_INFO("Tag id: [%d] ", &Tag_ID[counter]);
         	ROS_INFO("Tag ip: [%S]", &Tag_IP);
 		counter++;
-	}*/
-	/*
-	for(int i = 0; i>=sizeof(Id); i++)
-	{
-		Id[i] = msg->detections[i].id; //
-		//const char* Tag_IP = lookup(Id[i]);
-		ROS_INFO("Tag id: [%d]", &Id[i]);
-        	//ROS_INFO("Tag ip: [%S]", &Tag_IP);
-		i++;
 	}
 	*/
    }
