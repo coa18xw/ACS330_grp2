@@ -12,13 +12,14 @@
    void tag_detectionsCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
 // msg->detections[i].id to get
 	 {
-	
+	if( msg->detections.empty() == true){
 	std::vector<int> Tag_ID[12];
 	int counter =0;
 	ROS_INFO("test = %d", msg->detections[0].id);
 	ROS_INFO("test = %d", msg->detections[1].id);
 	ROS_INFO("test = %d", msg->detections[2].id);
 	ROS_INFO("test = %d", msg->detections[3].id);
+	}
 	
 /*
 	for(int counter=0; counter>12; counter++)
