@@ -20,6 +20,9 @@
 	ROS_INFO("test = %d", msg->detections[2].id);
 	ROS_INFO("test = %d", msg->detections[3].id);
 	}
+	if( msg->detections.empty() == false){
+		ROS_INFO("No Tags detected");
+	}
 	
 /*
 	for(int counter=0; counter>12; counter++)
