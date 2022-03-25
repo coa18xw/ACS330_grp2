@@ -12,44 +12,34 @@
    void tag_detectionsCallback(const apriltag_ros::AprilTagDetectionArray::ConstPtr& msg)
 // msg->detections[i].id to get
 	 {
-	if( msg->detections.empty() == false){
-		std::vector<int32_t> *Tag_ID[12];
-		int counter =0;
-		for(std::vector<apriltag_ros::AprilTagDetectionArray>::const_iterator it = msg->detections.begin(); it != msg->detections.end(); ++it)
+	if( msg->detections.empty() == false)
 		{
-			Tag_ID[counter] = *it.detections.id;
-			ROS_INFO("test = %d", Tag_ID[counter]);		
-			counter++;
-		}
-	}
-	if( msg->detections.empty() == true)
-	{
-		ROS_INFO("No Tags detected");
-	}
-	
-/*
-	for(int counter=0; counter>12; counter++)
-		{
+			int counter =0;
+			int32_t Tag_ID[12];
 		
-			
-		Tag_ID[counter] = msg->detections[counter].id;
-		const char* Tag_IP = lookup(Tag_ID[counter]);
-		ROS_INFO("Tag id: [%d] ", &Tag_ID[counter]);
-		ROS_INFO("Tag ip: [%S]", &Tag_IP);
+			while(msg->detections[counter].id[0] != NULL)
+			{
+				Tag_ID[counter] = msg->detections[counter].id[0];
+				const char* Tag_IP = lookup(Tag_ID[counter]);
+				ROS_INFO("Tag_ID = %ld", msg->detections[counter].id[0]);
+				ROS_INFO("Tag_ID = %s",Tag_IP);
+				counter++;
+			}
+		   
 			
 		}
-*/
-/*
-	for(std::vector<apriltag_ros::AprilTagDetectionArray>::const_iterator it = msg->detections.begin(); it != msg->detections.end(); ++it) // iterator that moves memory sizes of<type>
-	{
-		Tag_ID[counter] = *it.detections[counter].id;
-		const char* Tag_IP = lookup(Tag_ID[counter]);
-		ROS_INFO("Tag id: [%d] ", &Tag_ID[counter]);
-        	ROS_INFO("Tag ip: [%S]", &Tag_IP);
-		counter++;
+	if( msg->detections.empty() == true)
+		{
+		ROS_INFO("No Tags detected");
+		}
+				/*ROS_INFO("test = %ld", msg->detections[0].id[0]);
+				ROS_INFO("test = %ld", msg->detections[1].id[0]);
+				ROS_INFO("test = %ld", msg->detections[2].id[0]);	
+				ROS_INFO("test = %ld", msg->detections[3].id[0]);		
+				ROS_INFO("test = %d",msg->detections[counter].pose.header.seq);
+				//const char* Tag_IP = lookup(Tag_ID[counter]);
+   */	
 	}
-	*/
-   	}
    
    int main(int argc, char **argv)
    {
