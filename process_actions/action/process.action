@@ -1,5 +1,5 @@
 #goal
-int32 station_id
+string station_id
 ---
 #result
 bool complete
