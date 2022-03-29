@@ -63,10 +63,10 @@ void executeCB(const process_actions::processGoalConstPtr &goal)
 bool success = true;
 feedback_.percent_complete = 0;
 
-ROS_INFO("%s: Executing, processing block", station_name_);
+ROS_INFO("%s: Executing, processing block", station_name_.c_str());
  // start executing the action
        for(int32_t i=1; i<=100; i++)
-       {
+      {
          // check that preempt has not been requested by the client
          if (as_.isPreemptRequested() || !ros::ok())
          {
@@ -76,14 +76,14 @@ ROS_INFO("%s: Executing, processing block", station_name_);
            success = false;
            break;
         }
-	feedback_ = i;
+	feedback_.percent_complete = i;
 	as_.publishFeedback(feedback_);
 	r.sleep();
 	}
 	if(success)
 	{
-	result_ = true;
-	ROS_INFO("%s task completed");
+	result_.complete = true;
+	ROS_INFO("%s task completed", station_name_.c_str());
 	}
 
    }
