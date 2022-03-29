@@ -1,8 +1,0 @@
-#goal
-string station_id
----
-#result
-bool complete
----
-#feedback
-int32 percent_complete
