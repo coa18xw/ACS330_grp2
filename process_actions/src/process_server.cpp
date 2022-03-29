@@ -52,6 +52,7 @@ ProcessAction(std::string station_id) :
 as_(nh_, station_id, boost::bind(&ProcessAction::executeCB, this, _1), false), station_name_(station_id)
 	{
 		as_.start();
+		ROS_INFO("%s: Activated", station_id.c_str());
 	}
 
 ~ProcessAction(void)
@@ -65,7 +66,7 @@ feedback_.percent_complete = 0;
 
 ROS_INFO("%s: Executing, processing block", station_name_.c_str());
  // start executing the action
-       for(int32_t i=1; i<=100; i++)
+       for(int i=1; i<=100; i++)
       {
          // check that preempt has not been requested by the client
          if (as_.isPreemptRequested() || !ros::ok())
@@ -77,13 +78,15 @@ ROS_INFO("%s: Executing, processing block", station_name_.c_str());
            break;
         }
 	feedback_.percent_complete = i;
+	ROS_INFO("%d%.complete",i);
 	as_.publishFeedback(feedback_);
-	r.sleep();
+	//r.sleep();
 	}
 	if(success)
 	{
 	result_.complete = true;
 	ROS_INFO("%s task completed", station_name_.c_str());
+	as_.setSucceeded(result_);	
 	}
 
    }

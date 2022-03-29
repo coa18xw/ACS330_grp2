@@ -7,7 +7,7 @@ int main (int argc, char **argv)
 {
 ros::init(argc, argv, "test_process");
 
-actionlib::SimpleActionClient<process_actions::processAction> ac("heating", true);
+actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
 
 ROS_INFO("Waiting for action server to start.");
 ac.waitForServer(); //will wait for infinite time
