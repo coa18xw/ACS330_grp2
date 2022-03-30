@@ -78,7 +78,7 @@ ROS_INFO("%s: Executing, processing block", station_name_.c_str());
            break;
         }
 	feedback_.percent_complete = i;
-	ROS_INFO("%d%.complete",i);
+	ROS_INFO("%d %% ",i);
 	as_.publishFeedback(feedback_);
 	//r.sleep();
 	}
