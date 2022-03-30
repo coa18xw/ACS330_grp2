@@ -1,7 +1,7 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
-#include </home/coa19jwr/catkin_ws/devel/include/process_actions/processAction.h>
+#include <process_actions/processAction.h>
 #include <boost/thread.hpp>
 #include <unistd.h>
 
@@ -26,7 +26,7 @@ ROS_INFO("Action server started, sending goal : heating");
 process_actions::processGoal goal;
 goal.station_id = "Heating";
 ac.sendGoal(goal);
-bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0));
+bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
 if (finished_before_timeout)
 {
 actionlib::SimpleClientGoalState state = ac.getState();
