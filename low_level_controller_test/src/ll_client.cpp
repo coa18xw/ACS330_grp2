@@ -3,6 +3,7 @@
 #include <actionlib/client/terminal_state.h>
 #include </home/coa19jwr/catkin_ws/devel/include/process_actions/processAction.h>
 #include <boost/thread.hpp>
+#include <unistd.h>
 
 void spinThread()
 {
@@ -18,11 +19,34 @@ boost::thread spin_thread(&spinThread);
 
 ROS_INFO("Waiting for action server to start.");
 ac.waitForServer(); //will wait for infinite time
-ROS_INFO("Action server started, sending goal.");
+
+// goal 1
+
+ROS_INFO("Action server started, sending goal : heating");
 process_actions::processGoal goal;
 goal.station_id = "Heating";
 ac.sendGoal(goal);
 bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0));
+if (finished_before_timeout)
+{
+actionlib::SimpleClientGoalState state = ac.getState();
+ROS_INFO("Action finished: %s",state.toString().c_str());
+}
+else
+ROS_INFO("Action did not finish before the time out.");
+
+//wait for a bit
+ROS_INFO("**********************************************");
+unsigned int microsecond = 1000000;
+usleep(3*microsecond); // sleeps for 3 seconds
+
+//goal 2
+
+ROS_INFO("Action server started, sending goal : cleaning.");
+//process_actions::processGoal goal;
+goal.station_id = "Cleaning";
+ac.sendGoal(goal);
+ac.waitForResult(ros::Duration(30.0));
 if (finished_before_timeout)
 {
 actionlib::SimpleClientGoalState state = ac.getState();

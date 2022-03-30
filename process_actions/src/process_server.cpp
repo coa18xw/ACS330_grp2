@@ -35,6 +35,7 @@ int main(int argc, argv, "process_station_action")
 #include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
 #include <process_actions/processAction.h>
+#include <unistd.h>
 
 class ProcessAction
 {
@@ -64,14 +65,14 @@ void executeCB(const process_actions::processGoalConstPtr &goal)
 bool success = true;
 feedback_.percent_complete = 0;
 
-ROS_INFO("%s: Executing, processing block", station_name_.c_str());
+ROS_INFO("%s: Executing, processing block", goal->station_id.c_str());
  // start executing the action
        for(int i=1; i<=100; i++)
       {
          // check that preempt has not been requested by the client
          if (as_.isPreemptRequested() || !ros::ok())
          {
-           ROS_INFO("%s: Preempted", station_name_.c_str());
+           ROS_INFO("%s: Preempted", goal->station_id.c_str());
            // set the action state to preempted
            as_.setPreempted();
            success = false;
@@ -80,12 +81,13 @@ ROS_INFO("%s: Executing, processing block", station_name_.c_str());
 	feedback_.percent_complete = i;
 	ROS_INFO("%d %% ",i);
 	as_.publishFeedback(feedback_);
-	//r.sleep();
+	unsigned int microsecond = 1000000;
+	usleep(0.05*microsecond); // sleeps for 3 seconds
 	}
 	if(success)
 	{
 	result_.complete = true;
-	ROS_INFO("%s task completed", station_name_.c_str());
+	ROS_INFO("%s task completed", goal->station_id.c_str());
 	as_.setSucceeded(result_);	
 	}
 
