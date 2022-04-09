@@ -1,5 +1,6 @@
 #goal
-string[] tasks
+string controller_type
+string task
 ---
 #result
 bool complete
