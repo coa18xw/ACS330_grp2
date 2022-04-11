@@ -1,34 +1,3 @@
-/*
-
-//vesion 1 functional
-
-#include <ros/ros.h>
-#include <actionlib/server/simple_action_server.h>
-#include <process_actions/processAction.h>
-
-typedef actionlib::SimpleActionServer<process_actions::processAction> Server;
-
-void execute(const process_actions::processGoalConstPtr& goal, Server* as)
-{
-	//insert code for action here
-	ROS_INFO("starting %d",&goal->station_id);
-	std::this_thread::sleep_for(std::chrono::milliseconds(1500));
-	ROS_INFO("completed %d",&goal->station_id);
-	as->setSucceded();
-}
-
-int main(int argc, argv, "process_station_action")
-{
-	ros::init(argc, argv, "process_station_action")
-	ros::NodeHandle n;
-	Server server(n, "process_station_action", boost::bind(&execute, _1, &server), false);
-	server.start();
-	ros::spin();
-	return 0;
-}
-
-*/
-
 
 // version 2 oop
 
@@ -78,6 +47,7 @@ ROS_INFO("%s: Executing, processing block", goal->station_id.c_str());
            success = false;
            break;
         }
+	//add code in here
 	feedback_.percent_complete = i;
 	ROS_INFO("%d %% ",i);
 	as_.publishFeedback(feedback_);

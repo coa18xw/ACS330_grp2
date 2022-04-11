@@ -104,8 +104,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES low_level_controller_test
-#  CATKIN_DEPENDS actionlib actionlib_msgs message_generation process_actions roscpp rospy std_msgs
+# LIBRARIES low_level_controller
+  CATKIN_DEPENDS actionlib actionlib_msgs message_generation process_actions roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -122,7 +122,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/low_level_controller_test.cpp
+#   src/${PROJECT_NAME}/low_level_controller.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -145,7 +145,9 @@ add_executable(${PROJECT_NAME}_output src/ll_client_server.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(${PROJECT_NAME}_input ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(${PROJECT_NAME}_output ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(${PROJECT_NAME}_node

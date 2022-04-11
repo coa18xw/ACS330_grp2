@@ -9,9 +9,12 @@
 #include <unistd.h>
 
 
+
 void spinThread()
 {
-	ros::spin();
+	ros::AsyncSpinner spinner(2); // Use 2 threads
+	spinner.start();
+	ros::waitForShutdown();
 }
 
 
@@ -39,19 +42,22 @@ as_(nh_, controller_id, boost::bind(&LLController::executeCB, this, _1), false),
 {
 }
 void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
-{
-	ros::Rate r(1);
-bool success = true;
-int i =0;
-if(goal->task == "Heating")
-	{
-
-actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
-boost::thread spin_thread(&spinThread);
-		ROS_INFO("Action server started, sending goal : heating");
-		process_actions::processGoal goal;
-		goal.station_id = "Heating";
-		ac.sendGoal(goal);
+ {
+//llserver
+	bool success = true;
+	
+//excecuting called action
+	//action client stuff
+		
+		actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+		boost::thread spin_thread(&spinThread);
+		ROS_INFO("Waiting for action server to start.");
+		ac.waitForServer(); //will wait for infinite time
+		//
+		ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+		process_actions::processGoal Goal;
+		Goal.station_id = goal->task.c_str();
+		ac.sendGoal(Goal);
 		bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
 		if (finished_before_timeout)
 		{
@@ -61,18 +67,19 @@ boost::thread spin_thread(&spinThread);
 		else
 		ROS_INFO("Action did not finish before the time out.");
 
-		ros::shutdown();
-		spin_thread.join();
-	}
-
-ROS_INFO("Tasks Executing");
- // start executing the action
-	if(success)
+		// shutdown node and rejoin thread before exit
+		//ros::shutdown();
+		
+	//end of action client stuff
+// closing action_server
+	if(true)
 	{
 	result_.complete = true;
-	ROS_INFO("Complete");
+	ROS_INFO("task completed");
 	as_.setSucceeded(result_);	
-	}
+	}		
+	//closing thread from above
+			
 
    }
 };
@@ -84,7 +91,11 @@ ROS_INFO("Tasks Executing");
      ros::init(argc, argv, "input");
    
      LLController ll_controller("input",argc,argv);
-     ros::spin();
-   
+     
+
+	ros::AsyncSpinner spinner(2); // Use 2 threads
+	spinner.start();
+	ros::waitForShutdown();
+	   
      return 0;
    }
