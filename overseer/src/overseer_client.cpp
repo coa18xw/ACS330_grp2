@@ -25,7 +25,6 @@ ac.waitForServer(); //will wait for infinite time
 
 ROS_INFO("Action server started, sending goal.");
 low_level_controller::ll_client_serverGoal goal;
-goal.controller_type = "input";
 goal.task = "Heating";
 ac.sendGoal(goal);
 

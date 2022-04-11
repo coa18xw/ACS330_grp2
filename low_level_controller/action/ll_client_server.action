@@ -1,5 +1,4 @@
 #goal
-string controller_type
 string task
 ---
 #result
