@@ -27,7 +27,7 @@ ROS_INFO("Action server started, sending goal.");
 low_level_controller::ll_client_serverGoal goal;
 goal.task = "Heating";
 ac.sendGoal(goal);
-bool finished_before_timeout = ac.waitForResult(ros::Duration(40.0));
+bool finished_before_timeout = ac.waitForResult(ros::Duration(20.0));
 if (finished_before_timeout)
 {
 actionlib::SimpleClientGoalState state = ac.getState();
@@ -42,7 +42,7 @@ ROS_INFO("Action server started, sending goal : cleaning.");
 //process_actions::processGoal goal;
 goal.task = "Cleaning";
 ac.sendGoal(goal);
-ac.waitForResult(ros::Duration(30.0));
+finished_before_timeout = ac.waitForResult(ros::Duration(20.0));
 if (finished_before_timeout)
 {
 actionlib::SimpleClientGoalState state = ac.getState();

@@ -45,37 +45,65 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
  {
 //llserver
 	bool success = true;
-	
+	//temp variables for build
+	actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+	process_actions::processGoal Goal;
 //excecuting called action
 	//action client stuff
-		
-		actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
-		boost::thread spin_thread(&spinThread);
-		ROS_INFO("Waiting for action server to start.");
-		ac.waitForServer(); //will wait for infinite time
-		//
-		ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
-		process_actions::processGoal Goal;
-		Goal.station_id = goal->task.c_str();
-		ac.sendGoal(Goal);
-		bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
-		if (finished_before_timeout)
-		{
-		actionlib::SimpleClientGoalState state = ac.getState();
-		ROS_INFO("Action finished: %s",state.toString().c_str());
-		}
-		else
-		ROS_INFO("Action did not finish before the time out.");
 
-		// shutdown node and rejoin thread before exit
-		//ros::shutdown();
+		//process stations
+				if(goal->task == "Heating"||goal->task == "Cleaning")
+				{
+					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+					boost::thread spin_thread(&spinThread);
+					ROS_INFO("Waiting for action server to start.");
+					ac.waitForServer(); //will wait for infinite time
+					//
+					ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+					process_actions::processGoal Goal;
+				}
+		//moblie platforms
+				if(goal->task == "MM1"||goal->task == "MM2")
+				{
+					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+					boost::thread spin_thread(&spinThread);
+					ROS_INFO("Waiting for action server to start.");
+					ac.waitForServer(); //will wait for infinite time
+					//
+					ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+					process_actions::processGoal Goal;
+				}
+		//Assembly stations
+				if(goal->task == "Assembly")
+				{
+					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+					boost::thread spin_thread(&spinThread);
+					ROS_INFO("Waiting for action server to start.");
+					ac.waitForServer(); //will wait for infinite time
+					//
+					ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+					process_actions::processGoal Goal;
+				}
+					Goal.station_id = goal->task.c_str();
+					ac.sendGoal(Goal);
+					bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
+					if (finished_before_timeout)
+					{
+					actionlib::SimpleClientGoalState state = ac.getState();
+					ROS_INFO("Action finished: %s",state.toString().c_str());
+					}
+					else
+					ROS_INFO("Action did not finish before the time out.");
+				
+
+		
 		
 	//end of action client stuff
 // closing action_server
 	if(true)
 	{
 	result_.complete = true;
-	ROS_INFO("task completed");
+	ROS_INFO("%s task completed",goal->task.c_str());
 	as_.setSucceeded(result_);	
 	}		
 	//closing thread from above
