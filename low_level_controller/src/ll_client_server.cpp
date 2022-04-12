@@ -48,43 +48,61 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 	//temp variables for build
 	actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
 	process_actions::processGoal Goal;
+	int32_t size = sizeof(goal->task);
+	
+	//spin
+	boost::thread spin_thread(&spinThread);
+	int i = 0;
+	while(goal->task[i].empty() == false)
+  {
+	ROS_INFO("current goal : %s",goal->task[i].c_str());
 //excecuting called action
 	//action client stuff
-
-		//process stations
-				if(goal->task == "Heating"||goal->task == "Cleaning")
+		//checks
+				if(goal->task[i].c_str() == NULL)
 				{
+				break;
+				}
+		//process stations
+				if(goal->task[i] == "Heating"||goal->task[i]  == "Cleaning"||goal->task[i]  == "Cutting")
+				{
+					
 					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
-					boost::thread spin_thread(&spinThread);
+					//boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac.waitForServer(); //will wait for infinite time
 					//
-					ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					process_actions::processGoal Goal;
 				}
-		//moblie platforms
-				if(goal->task == "MM1"||goal->task == "MM2")
+
+				
+		//moblie platforms placeholders will do a task per location they need to go to
+				if(goal->task[i]  == "MM1"||goal->task[i]  == "MM2")
 				{
 					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac.waitForServer(); //will wait for infinite time
 					//
-					ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					process_actions::processGoal Goal;
 				}
 		//Assembly stations
-				if(goal->task == "Assembly")
+				if(goal->task[i]  == "Assembly")
 				{
 					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac.waitForServer(); //will wait for infinite time
 					//
-					ROS_INFO("Action server started, sending goal : %s",goal->task.c_str());
+					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());//.c_str()
 					process_actions::processGoal Goal;
 				}
-					Goal.station_id = goal->task.c_str();
+
+
+//common
+					Goal.station_id = goal->task[i].c_str();
 					ac.sendGoal(Goal);
 					bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
 					if (finished_before_timeout)
@@ -96,20 +114,22 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 					ROS_INFO("Action did not finish before the time out.");
 				
 
-		
-		
+		ROS_INFO("%s task completed",goal->task[i].c_str());
+		i++;
+	}
 	//end of action client stuff
+  
 // closing action_server
 	if(true)
 	{
 	result_.complete = true;
-	ROS_INFO("%s task completed",goal->task.c_str());
+	//ROS_INFO("%s task completed",goal->task[i].c_str());
 	as_.setSucceeded(result_);	
 	}		
 	//closing thread from above
 			
-
-   }
+  
+ }
 };
 
 

@@ -1,5 +1,5 @@
 #goal
-string task
+string[] task
 ---
 #result
 bool complete

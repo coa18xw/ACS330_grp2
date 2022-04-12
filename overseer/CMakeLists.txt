@@ -106,6 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+INCLUDE_DIRS include
   CATKIN_DEPENDS actionlib actionlib_msgs low_level_controller message_generation roscpp rospy std_msgs
 )
 ###########
@@ -115,7 +116,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+ include
   ${catkin_INCLUDE_DIRS}
 )
 

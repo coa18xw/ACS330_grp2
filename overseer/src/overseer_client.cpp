@@ -4,6 +4,7 @@
 #include <actionlib/client/terminal_state.h>
 #include <boost/thread.hpp>
 #include <unistd.h>
+#include <col_to_tasks.h>
 
 void spinThread()
 {
@@ -18,16 +19,22 @@ actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> ac("
 boost::thread spin_thread(&spinThread);
 
 
+//getting tasks from colour
+char colour = 'r';
+std::vector<std::string> tasks = col_to_tasks(colour);
+//
 
 //goal
+
 ROS_INFO("Waiting for action server to start.");
 ac.waitForServer(); //will wait for infinite time
 
 ROS_INFO("Action server started, sending goal.");
 low_level_controller::ll_client_serverGoal goal;
-goal.task = "Heating";
+
+goal.task = tasks; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
 ac.sendGoal(goal);
-bool finished_before_timeout = ac.waitForResult(ros::Duration(20.0));
+bool finished_before_timeout = ac.waitForResult(ros::Duration(40.0));
 if (finished_before_timeout)
 {
 actionlib::SimpleClientGoalState state = ac.getState();
@@ -36,20 +43,6 @@ ROS_INFO("Action finished: %s",state.toString().c_str());
 else
 ROS_INFO("Action did not finish before the time out.");
 
-//goal 2
-
-ROS_INFO("Action server started, sending goal : cleaning.");
-//process_actions::processGoal goal;
-goal.task = "Cleaning";
-ac.sendGoal(goal);
-finished_before_timeout = ac.waitForResult(ros::Duration(20.0));
-if (finished_before_timeout)
-{
-actionlib::SimpleClientGoalState state = ac.getState();
-ROS_INFO("Action finished: %s",state.toString().c_str());
-}
-else
-ROS_INFO("Action did not finish before the time out.");
-
+ros::spin();
 return 0;
 }
