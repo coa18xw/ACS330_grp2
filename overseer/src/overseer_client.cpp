@@ -8,7 +8,9 @@
 
 void spinThread()
 {
-	ros::spin();
+	ros::AsyncSpinner spinner(4); // Use 2 threads
+	spinner.start();
+	ros::waitForShutdown();
 }
 
 int main (int argc, char **argv)

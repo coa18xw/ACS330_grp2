@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(low_level_controller)
+project(assembly_actions)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -11,8 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   actionlib_msgs
   message_generation
-  process_actions
-  assembly_actions
+  message_runtime
   roscpp
   rospy
   std_msgs
@@ -66,14 +65,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate actions in the 'action' folder
- add_action_files(FILES ll_client_server.action)
+ add_action_files(DIRECTORY action  FILES assembly.action)
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   actionlib_msgs   std_msgs
- )
-
+generate_messages(DEPENDENCIES actionlib_msgs std_msgs)
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -105,8 +100,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-# LIBRARIES low_level_controller
-  CATKIN_DEPENDS actionlib actionlib_msgs message_generation process_actions assembly_actions roscpp rospy std_msgs
+#  LIBRARIES assembly_actions
+#  CATKIN_DEPENDS actionlib actionlib_msgs message_generation message_runtime roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -123,7 +118,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/low_level_controller.cpp
+#   src/${PROJECT_NAME}/assembly_actions.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -134,9 +129,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(${PROJECT_NAME}_node src/ll_client.cpp)
-add_executable(${PROJECT_NAME}_input src/ll_client_server.cpp)
-add_executable(${PROJECT_NAME}_output src/ll_client_server.cpp)
+ add_executable(assembly_server_node src/assembly_server.cpp)
+add_executable(assembly_client_node src/assembly_client.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,20 +140,18 @@ add_executable(${PROJECT_NAME}_output src/ll_client_server.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
- add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(${PROJECT_NAME}_input ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
- add_dependencies(${PROJECT_NAME}_output ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(assembly_server_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(assembly_client_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES}
- )
-target_link_libraries(${PROJECT_NAME}_input
-   ${catkin_LIBRARIES}
- )
-target_link_libraries(${PROJECT_NAME}_output
-   ${catkin_LIBRARIES}
- )
+target_link_libraries(
+assembly_server_node
+${catkin_LIBRARIES}
+)
+target_link_libraries(
+assembly_client_node
+${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############
@@ -207,7 +199,7 @@ target_link_libraries(${PROJECT_NAME}_output
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_low_level_controller_test.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_assembly_actions.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

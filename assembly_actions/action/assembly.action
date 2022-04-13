@@ -1,0 +1,8 @@
+#goal
+string[] order
+---
+#result
+bool complete
+---
+#feedback
+int32 percent_complete

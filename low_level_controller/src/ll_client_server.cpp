@@ -5,6 +5,7 @@
 #include <low_level_controller/ll_client_serverAction.h>
 #include <actionlib/client/terminal_state.h>
 #include <process_actions/processAction.h>
+#include <assembly_actions/assemblyAction.h>
 #include <boost/thread.hpp>
 #include <unistd.h>
 
@@ -12,7 +13,7 @@
 
 void spinThread()
 {
-	ros::AsyncSpinner spinner(2); // Use 2 threads
+	ros::AsyncSpinner spinner(4); // Use 2 threads
 	spinner.start();
 	ros::waitForShutdown();
 }
@@ -45,9 +46,7 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
  {
 //llserver
 	bool success = true;
-	//temp variables for build
-	actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
-	process_actions::processGoal Goal;
+	
 	int32_t size = sizeof(goal->task);
 	
 	//spin
@@ -55,6 +54,9 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 	int i = 0;
 	while(goal->task[i].empty() == false)
   {
+	//temp variables for build
+	actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+	process_actions::processGoal Goal;
 	ROS_INFO("current goal : %s",goal->task[i].c_str());
 //excecuting called action
 	//action client stuff
@@ -68,12 +70,13 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 				{
 					
 					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
-					//boost::thread spin_thread(&spinThread);
+					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac.waitForServer(); //will wait for infinite time
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					process_actions::processGoal Goal;
+					Goal.station_id = goal->task[i].c_str();
 				}
 
 				
@@ -91,18 +94,19 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 		//Assembly stations
 				if(goal->task[i]  == "Assembly")
 				{
-					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+					actionlib::SimpleActionClient<assembly_actions::assemblyAction> ac("assembly", true);
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac.waitForServer(); //will wait for infinite time
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());//.c_str()
-					process_actions::processGoal Goal;
+					assembly_actions::assemblyGoal Goal;
+					Goal.order = {"r","g","b"}; // need to add a way to  read and send the ordered arragment
 				}
 
 
 //common
-					Goal.station_id = goal->task[i].c_str();
+					
 					ac.sendGoal(Goal);
 					bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
 					if (finished_before_timeout)

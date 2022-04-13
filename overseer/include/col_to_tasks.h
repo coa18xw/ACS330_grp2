@@ -14,7 +14,7 @@ std::vector<std::string>  col_to_tasks(char colour)
 			    tasks.push_back("MM1");
 			    tasks.push_back("Heating");
 			    tasks.push_back("MM1");
-			    tasks.push_back("MM1");
+			    tasks.push_back("Assembly");
 			}
 	if(colour == 'b')
 			{
