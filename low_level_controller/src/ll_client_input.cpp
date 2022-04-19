@@ -6,6 +6,7 @@
 #include <actionlib/client/terminal_state.h>
 #include <process_actions/processAction.h>
 #include <assembly_actions/assemblyAction.h>
+#include <mm_actions/mmAction.h>
 #include <boost/thread.hpp>
 #include <unistd.h>
 
@@ -54,7 +55,8 @@ void executeCB(const low_level_controller::ll_client_server_v2GoalConstPtr &goal
 	int i = 0;
 	while(goal->task[i].c_str() != NULL)
   {
-	//temp variables for build
+	//displaying which controller running
+ROS_INFO("%s controller: running", controller_name_.c_str());
 //excecuting called action
 	//action client stuff
 		
@@ -85,22 +87,43 @@ void executeCB(const low_level_controller::ll_client_server_v2GoalConstPtr &goal
 
 				
 		//moblie platforms placeholders will do a task per location they need to go to
-				else if(goal->task[i]  == "MM1"||goal->task[i]  == "MM2")
+				else if(goal->task[i]  == "MM1")
 				{
-					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
+					actionlib::SimpleActionClient<mm_actions::mmAction> ac1("mm1", true);
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
-					ac.waitForServer(); //will wait for infinite time
+					ac1.waitForServer(); //will wait for infinite time
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
-					process_actions::processGoal Goal;
+					mm_actions::mmGoal Goal;
+					Goal.location = {12,14}; // to be changed 
 
-
-					ac.sendGoal(Goal);
-					bool finished_before_timeout = ac.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
+					ac1.sendGoal(Goal);
+					bool finished_before_timeout = ac1.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
 					if (finished_before_timeout)
 					{
-					actionlib::SimpleClientGoalState state = ac.getState();
+					actionlib::SimpleClientGoalState state = ac1.getState();
+					ROS_INFO("Action finished: %s",state.toString().c_str());
+					}
+					else
+					ROS_INFO("Action did not finish before the time out.");
+				}
+				else if(goal->task[i] == "MM2")
+				{
+					actionlib::SimpleActionClient<mm_actions::mmAction> ac2("mm2", true);
+					boost::thread spin_thread(&spinThread);
+					ROS_INFO("Waiting for action server to start.");
+					ac2.waitForServer(); //will wait for infinite time
+					//
+					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
+					mm_actions::mmGoal Goal;
+					Goal.location = {12,14}; // to be changed 
+
+					ac2.sendGoal(Goal);
+					bool finished_before_timeout = ac2.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
+					if (finished_before_timeout)
+					{
+					actionlib::SimpleClientGoalState state = ac2.getState();
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 					}
 					else
@@ -133,6 +156,7 @@ void executeCB(const low_level_controller::ll_client_server_v2GoalConstPtr &goal
 		//checks
 					else
 					{
+					spin_thread.join();
 					break;
 					}
 					
@@ -153,7 +177,7 @@ void executeCB(const low_level_controller::ll_client_server_v2GoalConstPtr &goal
 	as_.setSucceeded(result_);	
 	}		
 	//closing thread from above
-			
+		
   
  }
 };
@@ -162,16 +186,18 @@ void executeCB(const low_level_controller::ll_client_server_v2GoalConstPtr &goal
 
  int main(int argc, char** argv)
  {
-     ros::init(argc, argv, "LL_controlller_input");   
-     LLController ll_controllerI("input",argc,argv);
-     //LLController ll_controllerO("output",argc,argv);
+     ros::init(argc, argv, "input");   
      
+    // LLController ll_controllerO("output",argc,argv);
+     LLController ll_controllerI("input",argc,argv);
 
 	ros::AsyncSpinner spinner(2); // Use 2 threads
 	spinner.start();
 	ros::waitForShutdown();
 
 
+   
+ 
 	   
      return 0;
    }

@@ -1,6 +1,8 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <low_level_controller/ll_client_serverAction.h>
+#include <low_level_controller/ll_client_server_outputAction.h>
+#include <low_level_controller/ll_client_server_inputAction.h>
 #include <actionlib/client/terminal_state.h>
 #include <boost/thread.hpp>
 #include <unistd.h>
@@ -19,6 +21,8 @@ int main (int argc, char **argv)
 
 	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acI("input", true);
 	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acO("output", true);
+//while(ros::ok())
+
 	boost::thread spin_thread(&spinThread);
 
 
@@ -72,6 +76,7 @@ int main (int argc, char **argv)
 	else
 	ROS_INFO("Action did not finish before the time out.");
 */
+
 		unsigned int microsecond = 1000000;
 		usleep(3*microsecond); // sleeps for 3 seconds
 
@@ -113,9 +118,12 @@ int main (int argc, char **argv)
 	else
 	ROS_INFO("Action did not finish before the time out.");
 
+	//
+	usleep(3*microsecond); // sleeps for 3 seconds
 
 	ros::AsyncSpinner spinner(4); // Use 2 threads
 	spinner.start();
+
 	//ros::waitForShutdown();
 	return 0;
 }

@@ -2,6 +2,7 @@
 #include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
 #include <actionlib/client/simple_action_client.h>
+#include <low_level_controller/ll_client_serverAction.h>
 #include <low_level_controller/ll_client_server_v2Action.h>
 #include <actionlib/client/terminal_state.h>
 #include <process_actions/processAction.h>
@@ -25,11 +26,11 @@ class LLController
 protected:
 
 	ros::NodeHandle nh_;
-	actionlib::SimpleActionServer<low_level_controller::ll_client_server_v2Action> as_; // NodeHandle instance must be created before this line. Otherwise strange error occurs.
+	actionlib::SimpleActionServer<low_level_controller::ll_client_serverAction> as_; // NodeHandle instance must be created before this line. Otherwise strange error occurs.
 	std::string controller_name_;
 	// create messages that are used to published feedback/result
-	low_level_controller::ll_client_server_v2Feedback feedback_;
-	low_level_controller::ll_client_server_v2Result result_;
+	low_level_controller::ll_client_serverFeedback feedback_;
+	low_level_controller::ll_client_serverResult result_;
 
 public:
 LLController(std::string controller_id, int argc,char** argv) :
@@ -43,7 +44,7 @@ as_(nh_, controller_id, boost::bind(&LLController::executeCB, this, _1), false),
 ~LLController(void)
 {
 }
-void executeCB(const low_level_controller::ll_client_server_v2GoalConstPtr &goal)
+void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
  {
 //llserver
 	bool success = true;

@@ -66,7 +66,7 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate actions in the 'action' folder
- add_action_files(FILES ll_client_server.action ll_client_server_v2.action)
+ add_action_files(FILES ll_client_server.action ll_client_server_v2.action ll_client_server_input.action ll_client_server_output.action)
 
 ## Generate added messages and services with any dependencies listed here
  generate_messages(

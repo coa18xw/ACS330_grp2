@@ -31,8 +31,8 @@ std::vector<std::string>  col_to_tasks(char colour)
 			    tasks.push_back("Assembly");
 			    tasks.push_back("MM2");
 			    tasks.push_back("Assembly");
-			   // tasks.push_back("MM2");
-			  //  tasks.push_back("Assembly");
+			    tasks.push_back("MM2");
+			    tasks.push_back("Assembly");
 			}	
 
 
