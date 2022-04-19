@@ -99,7 +99,7 @@ int main (int argc, char **argv)
 	}
 	else
 	ROS_INFO("Action did not finish before the time out.");
-
+	//output
 	goal.task = tasksO; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
 	acO.sendGoal(goal);
 
@@ -114,7 +114,7 @@ int main (int argc, char **argv)
 	ROS_INFO("Action did not finish before the time out.");
 
 
-	ros::AsyncSpinner spinner(2); // Use 2 threads
+	ros::AsyncSpinner spinner(4); // Use 2 threads
 	spinner.start();
 	//ros::waitForShutdown();
 	return 0;
