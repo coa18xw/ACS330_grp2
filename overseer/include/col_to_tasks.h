@@ -12,9 +12,9 @@ std::vector<std::string>  col_to_tasks(char colour)
 			{
 			//tasks.push_back("test0"); // Adds an element
 			    tasks.push_back("MM1");
+			    tasks.push_back("MM1");
 			    tasks.push_back("Heating");
 			    tasks.push_back("MM1");
-			    tasks.push_back("Assembly");
 			}
 	if(colour == 'b')
 			{
@@ -24,14 +24,18 @@ std::vector<std::string>  col_to_tasks(char colour)
 			    tasks.push_back("MM1");
 			    tasks.push_back("MM1");
 			}
-	if(colour == 'g')
+	if(colour == 'o')
 			{
 			//tasks.push_back("test0"); // Adds an element
-			    tasks.push_back("MM1");
-			    tasks.push_back("Cutting");
-			    tasks.push_back("MM1");
-			    tasks.push_back("MM1");
+			    tasks.push_back("MM2");
+			    tasks.push_back("Assembly");
+			    tasks.push_back("MM2");
+			    tasks.push_back("Assembly");
+			   // tasks.push_back("MM2");
+			  //  tasks.push_back("Assembly");
 			}	
+
+
 
 	return tasks;
 }

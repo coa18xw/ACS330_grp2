@@ -15,36 +15,109 @@ void spinThread()
 
 int main (int argc, char **argv)
 {
-ros::init(argc, argv, "ll_controller");
+	ros::init(argc, argv, "Overseer");
 
-actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> ac("input", true);
-boost::thread spin_thread(&spinThread);
+	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acI("input", true);
+	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acO("output", true);
+	boost::thread spin_thread(&spinThread);
 
 
-//getting tasks from colour
-char colour = 'r';
-std::vector<std::string> tasks = col_to_tasks(colour);
-//
+	//getting tasks from colour
+	char colour = 'r';
+	std::vector<std::string> tasks = col_to_tasks(colour);
+	//
 
-//goal
+	//goal
 
-ROS_INFO("Waiting for action server to start.");
-ac.waitForServer(); //will wait for infinite time
+	ROS_INFO("Waiting for action server to start.");
+	acI.waitForServer(); //will wait for infinite time
 
-ROS_INFO("Action server started, sending goal.");
-low_level_controller::ll_client_serverGoal goal;
+	ROS_INFO("Action server started, sending goal.");
+	low_level_controller::ll_client_serverGoal goal;
 
-goal.task = tasks; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
-ac.sendGoal(goal);
-bool finished_before_timeout = ac.waitForResult(ros::Duration(40.0));
-if (finished_before_timeout)
-{
-actionlib::SimpleClientGoalState state = ac.getState();
-ROS_INFO("Action finished: %s",state.toString().c_str());
+	goal.task = tasks; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
+	acI.sendGoal(goal);
+	bool finished_before_timeout = acI.waitForResult(ros::Duration(0.0));
+	if (finished_before_timeout)
+	{
+	actionlib::SimpleClientGoalState state = acI.getState();
+	ROS_INFO("Action finished: %s",state.toString().c_str());
+	}
+	else
+	ROS_INFO("Action did not finish before the time out.");
+
+
+
+	//getting tasks from colour
+	colour = 'b';
+	tasks = col_to_tasks(colour);
+	//
+/*
+	//goal2
+
+	ROS_INFO("Waiting for action server to start.");
+	acO.waitForServer(); //will wait for infinite time
+
+	ROS_INFO("Action server started, sending goal.");
+	//low_level_controller::ll_client_serverGoal goal;
+
+	goal.task = tasks; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
+	acO.sendGoal(goal);
+	finished_before_timeout = acO.waitForResult(ros::Duration(0.0));
+	if (finished_before_timeout)
+	{
+	actionlib::SimpleClientGoalState state = acO.getState();
+	ROS_INFO("Action finished: %s",state.toString().c_str());
+	}
+	else
+	ROS_INFO("Action did not finish before the time out.");
+*/
+		unsigned int microsecond = 1000000;
+		usleep(3*microsecond); // sleeps for 3 seconds
+
+	//goal combined
+	colour = 'b';
+	std::vector<std::string> tasksI = col_to_tasks(colour);
+	colour = 'o';
+	std::vector<std::string> tasksO = col_to_tasks(colour);
+
+
+	ROS_INFO("Sending Dual goals.");
+	//low_level_controller::ll_client_serverGoal goal;
+
+	goal.task = tasksO; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
+	acO.sendGoal(goal);
+	goal.task = tasksI; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
+	acI.sendGoal(goal);
+
+	//may need to double up below
+	finished_before_timeout = acO.waitForResult(ros::Duration(0.0));
+	if (finished_before_timeout)
+	{
+	actionlib::SimpleClientGoalState state = acO.getState();
+	ROS_INFO("Action finished: %s",state.toString().c_str());
+	}
+	else
+	ROS_INFO("Action did not finish before the time out.");
+
+	goal.task = tasksO; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
+	acO.sendGoal(goal);
+
+	//may need to double up below
+	finished_before_timeout = acO.waitForResult(ros::Duration(0.0));
+	if (finished_before_timeout)
+	{
+	actionlib::SimpleClientGoalState state = acO.getState();
+	ROS_INFO("Action finished: %s",state.toString().c_str());
+	}
+	else
+	ROS_INFO("Action did not finish before the time out.");
+
+
+	ros::AsyncSpinner spinner(2); // Use 2 threads
+	spinner.start();
+	//ros::waitForShutdown();
+	return 0;
 }
-else
-ROS_INFO("Action did not finish before the time out.");
 
-ros::spin();
-return 0;
-}
+

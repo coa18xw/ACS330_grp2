@@ -1,0 +1,9 @@
+#goal
+int32[] location
+---
+#result
+bool complete
+---
+#feedback
+int32 percent_complete
+

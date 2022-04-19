@@ -3,45 +3,45 @@
 
 #include <ros/ros.h>
 #include <actionlib/server/simple_action_server.h>
-#include <process_actions/processAction.h>
+#include <mm_actions/mmAction.h>
 #include <unistd.h>
 
-class ProcessAction
+class MMAction
 {
 protected:
 
 	ros::NodeHandle nh_;
-	actionlib::SimpleActionServer<process_actions::processAction> as_; // NodeHandle instance must be created before this line. Otherwise strange error occurs.
-	std::string station_name_;
+	actionlib::SimpleActionServer<mm_actions::mmAction> as_; // NodeHandle instance must be created before this line. Otherwise strange error occurs.
+	std::string mm_name_;
 	// create messages that are used to published feedback/result
-	process_actions::processFeedback feedback_;
-	process_actions::processResult result_;
+	mm_actions::mmFeedback feedback_;
+	mm_actions::mmResult result_;
 
 public:
-ProcessAction(std::string station_id) :
-as_(nh_, station_id, boost::bind(&ProcessAction::executeCB, this, _1), false), station_name_(station_id)
+MMAction(std::string mm_id) :
+as_(nh_, mm_id, boost::bind(&MMAction::executeCB, this, _1), false), mm_name_(mm_id)
 	{
 		as_.start();
-		ROS_INFO("%s: Activated", station_id.c_str());
+		ROS_INFO("%s: Activated", mm_id.c_str());
 	}
 
-~ProcessAction(void)
+~MMAction(void)
 {
 }
-void executeCB(const process_actions::processGoalConstPtr &goal)
+void executeCB(const mm_actions::mmGoalConstPtr &goal)
 {
 	ros::Rate r(1);
 bool success = true;
 feedback_.percent_complete = 0;
 
-ROS_INFO("%s: Executing, processing block", goal->station_id.c_str());
+ROS_INFO("%s: Executing, Moving to %d,%d", mm_name_.c_str(), goal->location[0],goal->location[1]);
  // start executing the action
        for(int i=1; i<=100; i++)
       {
          // check that preempt has not been requested by the client
          if (as_.isPreemptRequested() || !ros::ok())
          {
-           ROS_INFO("%s: Preempted", goal->station_id.c_str());
+           ROS_INFO("%s: Preempted", mm_name_.c_str());
            // set the action state to preempted
            as_.setPreempted();
            success = false;
@@ -57,7 +57,7 @@ ROS_INFO("%s: Executing, processing block", goal->station_id.c_str());
 	if(success)
 	{
 	result_.complete = true;
-	ROS_INFO("%s task completed", goal->station_id.c_str());
+	ROS_INFO("%s task completed", mm_name_.c_str());
 	as_.setSucceeded(result_);	
 	}
 
@@ -66,9 +66,10 @@ ROS_INFO("%s: Executing, processing block", goal->station_id.c_str());
 
  int main(int argc, char** argv)
  {
-     ros::init(argc, argv, "process");
+     ros::init(argc, argv, "mm2");
    
-     ProcessAction process("process");
+     //MMAction mm1("mm1");
+     MMAction mm2("mm2");
      ros::spin();
    
      return 0;
