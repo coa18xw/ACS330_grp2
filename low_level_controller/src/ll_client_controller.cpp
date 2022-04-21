@@ -158,7 +158,7 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					else
 					{
 					spin_thread.join();
-					break;
+					
 					}
 					
 //common
@@ -184,9 +184,9 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 };
 
 //maybe try splitting into two classes input and output
-/*
 
-class LLController
+
+class LLController_o
 {
 protected:
 
@@ -198,15 +198,15 @@ protected:
 	low_level_controller::ll_client_serverResult result_;
 
 public:
-LLController(std::string controller_id, int argc,char** argv) :
-as_(nh_, controller_id, boost::bind(&LLController::executeCB, this, _1), false), controller_name_(controller_id)
+LLController_o(std::string controller_id, int argc,char** argv) :
+as_(nh_, controller_id, boost::bind(&LLController_o::executeCB, this, _1), false), controller_name_(controller_id)
 	{
 		as_.start();
 		ROS_INFO("%s activated",controller_id.c_str());
 		ros::init(argc, argv, "process");
 	}
 
-~LLController(void)
+~LLController_o(void)
 {
 }
 void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
@@ -323,7 +323,6 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					else
 					{
 					spin_thread.join();
-					break;
 					}
 					
 //common
@@ -347,7 +346,7 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
   
  }
 };
-*/
+
 
 
 
@@ -355,7 +354,7 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
  {
      ros::init(argc, argv, "LL_controlller");   
      
-     LLController ll_controllerO("output",argc,argv);
+     LLController_o ll_controllerO("output",argc,argv);
      LLController ll_controllerI("input",argc,argv);
 
 	ros::AsyncSpinner spinner(2); // Use 2 threads
