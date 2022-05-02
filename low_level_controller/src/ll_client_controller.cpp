@@ -49,7 +49,7 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 //llserver
 	bool success = true;
 	
-	int32_t size = sizeof(goal->task);
+	int size = sizeof(goal->task);
 	
 	//spin
 	boost::thread spin_thread(&spinThread);
@@ -67,6 +67,7 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					
 					actionlib::SimpleActionClient<process_actions::processAction> ac("process", true);
 					boost::thread spin_thread(&spinThread);
+					
 					ROS_INFO("Waiting for action server to start.");
 					ac.waitForServer(); //will wait for infinite time
 					//
@@ -94,13 +95,29 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac1.waitForServer(); //will wait for infinite time
+					i++;
+					while(goal->task[i] != "end")
+					{
+					if(goal->task[i] == "end"){
+					break;
+						}
+					
+					int Len_coord = goal->task[i].length();
+					int dot_pos = goal->task[i].find(".");
+					std::string x_pos = goal->task[i].substr(0,dot_pos);
+					std::string y_pos = goal->task[i].substr(dot_pos+1,Len_coord-dot_pos);
+					int X = stoi(x_pos,0,10);
+					int Y = stoi(y_pos,0,10);
+					
+					
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					mm_actions::mmGoal Goal;
-					Goal.location = {12,14}; // to be changed 
+					Goal.location = {X,Y}; // to be changed 
 
 					ac1.sendGoal(Goal);
-					bool finished_before_timeout = ac1.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
+					
+					bool finished_before_timeout = ac1.waitForResult(ros::Duration(0.0)); // 0 = infinite timeout
 					if (finished_before_timeout)
 					{
 					actionlib::SimpleClientGoalState state = ac1.getState();
@@ -108,6 +125,8 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					}
 					else
 					ROS_INFO("Action did not finish before the time out.");
+					i++;
+					}
 				}
 				else if(goal->task[i] == "MM2")
 				{
@@ -115,10 +134,24 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac2.waitForServer(); //will wait for infinite time
+					i++;
+					while(goal->task[i] != "end")
+					{
+					if(goal->task[i] == "end"){
+					break;
+						}
+					
+					int Len_coord = goal->task[i].length();
+					int dot_pos = goal->task[i].find(".");
+					std::string x_pos = goal->task[i].substr(0,dot_pos);
+					std::string y_pos = goal->task[i].substr(dot_pos+1,Len_coord-dot_pos);
+					int X = stoi(x_pos,0,10);
+					int Y = stoi(y_pos,0,10);
+					
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					mm_actions::mmGoal Goal;
-					Goal.location = {12,14}; // to be changed 
+					Goal.location = {X,Y}; // to be changed 
 
 					ac2.sendGoal(Goal);
 					bool finished_before_timeout = ac2.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
@@ -129,6 +162,8 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					}
 					else
 					ROS_INFO("Action did not finish before the time out.");
+					i++;
+					}
 				}
 		//Assembly stations
 				else if(goal->task[i]  == "Assembly")
@@ -158,7 +193,8 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					else
 					{
 					spin_thread.join();
-					
+					ROS_INFO("End of known tasks");
+					break;
 					}
 					
 //common
@@ -259,13 +295,29 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac1.waitForServer(); //will wait for infinite time
+					i++;
+					while(goal->task[i] != "end")
+					{
+					if(goal->task[i] == "end"){
+					break;
+						}
+					
+					int Len_coord = goal->task[i].length();
+					int dot_pos = goal->task[i].find(".");
+					std::string x_pos = goal->task[i].substr(0,dot_pos);
+					std::string y_pos = goal->task[i].substr(dot_pos+1,Len_coord-dot_pos);
+					int X = stoi(x_pos,0,10);
+					int Y = stoi(y_pos,0,10);
+					
+					
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					mm_actions::mmGoal Goal;
-					Goal.location = {12,14}; // to be changed 
+					Goal.location = {X,Y}; // to be changed 
 
 					ac1.sendGoal(Goal);
-					bool finished_before_timeout = ac1.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
+					
+					bool finished_before_timeout = ac1.waitForResult(ros::Duration(0.0)); // 0 = infinite timeout
 					if (finished_before_timeout)
 					{
 					actionlib::SimpleClientGoalState state = ac1.getState();
@@ -273,6 +325,8 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					}
 					else
 					ROS_INFO("Action did not finish before the time out.");
+					i++;
+					}
 				}
 				else if(goal->task[i] == "MM2")
 				{
@@ -280,10 +334,24 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					boost::thread spin_thread(&spinThread);
 					ROS_INFO("Waiting for action server to start.");
 					ac2.waitForServer(); //will wait for infinite time
+					i++;
+					while(goal->task[i] != "end")
+					{
+					if(goal->task[i] == "end"){
+					break;
+						}
+					
+					int Len_coord = goal->task[i].length();
+					int dot_pos = goal->task[i].find(".");
+					std::string x_pos = goal->task[i].substr(0,dot_pos);
+					std::string y_pos = goal->task[i].substr(dot_pos+1,Len_coord-dot_pos);
+					int X = stoi(x_pos,0,10);
+					int Y = stoi(y_pos,0,10);
+					
 					//
 					ROS_INFO("Action server started, sending goal : %s",goal->task[i].c_str());
 					mm_actions::mmGoal Goal;
-					Goal.location = {12,14}; // to be changed 
+					Goal.location = {X,Y}; // to be changed 
 
 					ac2.sendGoal(Goal);
 					bool finished_before_timeout = ac2.waitForResult(ros::Duration(30.0)); // 0 = infinite timeout
@@ -294,6 +362,8 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					}
 					else
 					ROS_INFO("Action did not finish before the time out.");
+					i++;
+					}
 				}
 		//Assembly stations
 				else if(goal->task[i]  == "Assembly")
@@ -323,6 +393,8 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					else
 					{
 					spin_thread.join();
+					ROS_INFO("End of known tasks");
+					break;
 					}
 					
 //common
