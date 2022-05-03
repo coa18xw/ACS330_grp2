@@ -7,6 +7,7 @@
 #include <boost/thread.hpp>
 #include <unistd.h>
 #include <col_to_tasks.h>
+#include <assembly_tasks.h>
 
 void spinThread()
 {
@@ -83,8 +84,8 @@ int main (int argc, char **argv)
 	//goal combined
 	colour = 'b';
 	std::vector<std::string> tasksI = col_to_tasks(colour);
-	colour = 'o';
-	std::vector<std::string> tasksO = col_to_tasks(colour);
+	
+	std::vector<std::string> tasksO = assembly_tasks("12.19");
 
 
 	ROS_INFO("Sending Dual goals.");
