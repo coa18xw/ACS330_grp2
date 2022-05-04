@@ -52,7 +52,7 @@ ROS_INFO("%s: Executing, Moving to %d,%d", mm_name_.c_str(), goal->location[0],g
 	ROS_INFO("%d %% ",i);
 	as_.publishFeedback(feedback_);
 	unsigned int microsecond = 1000000;
-	usleep(0.05*microsecond); // sleeps for 0.05 seconds
+	usleep(0.009*microsecond); // sleeps for 0.05 seconds
 	}
 	if(success)
 	{

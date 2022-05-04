@@ -1,4 +1,6 @@
 #include <ros/ros.h>
+#include <iostream>
+#include <string>
 #include <actionlib/client/simple_action_client.h>
 #include <low_level_controller/ll_client_serverAction.h>
 #include <low_level_controller/ll_client_server_outputAction.h>
@@ -7,6 +9,7 @@
 #include <boost/thread.hpp>
 #include <unistd.h>
 #include <col_to_tasks.h>
+#include <assembly_tasks.h>
 
 void spinThread()
 {
@@ -21,110 +24,75 @@ int main (int argc, char **argv)
 
 	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acI("input", true);
 	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acO("output", true);
-//while(ros::ok())
+	char storageStr[16]={'.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.'};
+	std::string location;
+	int dot_pos;
+	
+while(ros::ok()){
 
 	boost::thread spin_thread(&spinThread);
-
-
-	//getting tasks from colour
-	char colour = 'r';
-	std::vector<std::string> tasks = col_to_tasks(colour);
-	//
-
-	//goal
-
-	ROS_INFO("Waiting for action server to start.");
-	acI.waitForServer(); //will wait for infinite time
-
-	ROS_INFO("Action server started, sending goal.");
 	low_level_controller::ll_client_serverGoal goal;
-
-	goal.task = tasks; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
-	acI.sendGoal(goal);
-	bool finished_before_timeout = acI.waitForResult(ros::Duration(1000000.0));
-	if (finished_before_timeout)
-	{
-	actionlib::SimpleClientGoalState state = acI.getState();
-	ROS_INFO("Action finished: %s",state.toString().c_str());
-	}
-	else
-	ROS_INFO("Action did not finish before the time out.");
+	bool finished_before_timeout_I;
+	bool finished_before_timeout_O;
+	char colour;
 
 
-
-	//getting tasks from colour
-	colour = 'b';
-	tasks = col_to_tasks(colour);
-	//
-/*
-	//goal2
-
-	ROS_INFO("Waiting for action server to start.");
-	acO.waitForServer(); //will wait for infinite time
-
-	ROS_INFO("Action server started, sending goal.");
-	//low_level_controller::ll_client_serverGoal goal;
-
-	goal.task = tasks; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
-	acO.sendGoal(goal);
-	finished_before_timeout = acO.waitForResult(ros::Duration(0.0));
-	if (finished_before_timeout)
-	{
-	actionlib::SimpleClientGoalState state = acO.getState();
-	ROS_INFO("Action finished: %s",state.toString().c_str());
-	}
-	else
-	ROS_INFO("Action did not finish before the time out.");
-*/
-
-		unsigned int microsecond = 1000000;
-		usleep(3*microsecond); // sleeps for 3 seconds
+	unsigned int microsecond = 1000000;
+	usleep(3*microsecond); // sleeps for 3 seconds
 
 	//goal combined
-	colour = 'b';
-	std::vector<std::string> tasksI = col_to_tasks(colour);
-	colour = 'o';
-	std::vector<std::string> tasksO = col_to_tasks(colour);
+	colour = 'r';
+/*
+	for(int i = 0; i =16;i++){
+	if(storageStr[i] = '.')
+{
+dot_pos = i;
+location = 
+}
+	std::string location = {"Full"};
+	ROS_INFO("Storgae full");
+	break;
+	
+	
+	storageStr[dot_pos]=colour;
+	int temp = dot_pos*5;
+	XY=std::to_string(temp) += ".14";
+	location = {XY};
+	}
+
+	std::vector<std::string> tasksI = col_to_tasks(colour,location);
+*/
+	std::vector<std::string> tasksI = col_to_tasks(colour,"12.19");
+	std::vector<std::string> tasksO = assembly_tasks("12.19");
 
 
 	ROS_INFO("Sending Dual goals.");
-	//low_level_controller::ll_client_serverGoal goal;
-
+	
 	goal.task = tasksO; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
 	acO.sendGoal(goal);
 	goal.task = tasksI; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
 	acI.sendGoal(goal);
 
 	//may need to double up below
-	finished_before_timeout = acO.waitForResult(ros::Duration(0.0));
-	if (finished_before_timeout)
+	finished_before_timeout_O = acO.waitForResult(ros::Duration(0.0));
+	finished_before_timeout_I = acI.waitForResult(ros::Duration(0.0));
+	if (finished_before_timeout_I&&finished_before_timeout_O)
 	{
-	actionlib::SimpleClientGoalState state = acO.getState();
-	ROS_INFO("Action finished: %s",state.toString().c_str());
+	actionlib::SimpleClientGoalState state_I = acI.getState();
+	ROS_INFO("Action finished: %s",state_I.toString().c_str());
+	actionlib::SimpleClientGoalState state_O = acO.getState();
+	ROS_INFO("Action finished: %s",state_O.toString().c_str());
 	}
 	else
-	ROS_INFO("Action did not finish before the time out.");
-	//output
-	goal.task = tasksO; //{"Heating","Cleaning","Cutting","MM1","MM2","Assembly"};
-	acO.sendGoal(goal);
+	ROS_INFO("Actions did not finish before the time out.");
 
-	//may need to double up below
-	finished_before_timeout = acO.waitForResult(ros::Duration(0.0));
-	if (finished_before_timeout)
-	{
-	actionlib::SimpleClientGoalState state = acO.getState();
-	ROS_INFO("Action finished: %s",state.toString().c_str());
-	}
-	else
-	ROS_INFO("Action did not finish before the time out.");
 
-	//
-	usleep(3*microsecond); // sleeps for 3 seconds
 
 	ros::AsyncSpinner spinner(4); // Use 2 threads
 	spinner.start();
-
+}
 	//ros::waitForShutdown();
+	
 	return 0;
 }
 

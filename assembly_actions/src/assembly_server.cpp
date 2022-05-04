@@ -41,7 +41,7 @@ ROS_INFO("%s: Executing, processing block", goal->order[0].c_str());
          // check that preempt has not been requested by the client
          if (as_.isPreemptRequested() || !ros::ok())
          {
-           ROS_INFO("%s: Preempted", goal->order[9].c_str());
+           ROS_INFO("%s: Preempted", goal->order[0].c_str());
            // set the action state to preempted
            as_.setPreempted();
            success = false;
@@ -52,7 +52,7 @@ ROS_INFO("%s: Executing, processing block", goal->order[0].c_str());
 	ROS_INFO("%d %% ",i);
 	as_.publishFeedback(feedback_);
 	unsigned int microsecond = 1000000;
-	usleep(0.05*microsecond); // sleeps for 3 seconds
+	usleep(0.005*microsecond); // sleeps for 3 seconds
 	}
 	if(success)
 	{

@@ -52,7 +52,7 @@ ROS_INFO("%s: Executing, processing block", goal->station_id.c_str());
 	ROS_INFO("%d %% ",i);
 	as_.publishFeedback(feedback_);
 	unsigned int microsecond = 1000000;
-	usleep(0.05*microsecond); // sleeps for 0.05 seconds
+	usleep(0.005*microsecond); // sleeps for 0.05 seconds
 	}
 	if(success)
 	{

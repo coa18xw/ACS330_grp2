@@ -60,6 +60,14 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 ROS_INFO("%s controller: running", controller_name_.c_str());
 //excecuting called action
 	//action client stuff
+				if (as_.isPreemptRequested() || !ros::ok())
+				 {
+				   ROS_INFO("%s: Preempted", goal->task[i].c_str());
+				   // set the action state to preempted
+				   as_.setPreempted();
+				   success = false;
+				   break;
+				}
 		
 		//process stations
 				if(goal->task[i] == "Heating"||goal->task[i]  == "Cleaning"||goal->task[i]  == "Cutting")
@@ -82,9 +90,12 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					{
 					actionlib::SimpleClientGoalState state = ac.getState();
 					ROS_INFO("Action finished: %s",state.toString().c_str());
+
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
+					
 				}
 
 				
@@ -123,9 +134,11 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					actionlib::SimpleClientGoalState state = ac1.getState();
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
 					i++;
+					
 					}
 				}
 				else if(goal->task[i] == "MM2")
@@ -160,9 +173,11 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					actionlib::SimpleClientGoalState state = ac2.getState();
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
 					i++;
+					
 					}
 				}
 		//Assembly stations
@@ -186,15 +201,20 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
+					
 				}
 		//checks
 					else
 					{
-					spin_thread.join();
+					
 					ROS_INFO("End of known tasks");
-					break;
+					if(i>size)
+						{
+						break;
+						}
 					}
 					
 //common
@@ -261,7 +281,14 @@ void executeCB(const low_level_controller::ll_client_serverGoalConstPtr &goal)
 ROS_INFO("%s controller: running", controller_name_.c_str());
 //excecuting called action
 	//action client stuff
-		
+				if (as_.isPreemptRequested() || !ros::ok())
+				 {
+				   ROS_INFO("%s: Preempted", goal->task[i].c_str());
+				   // set the action state to preempted
+				   as_.setPreempted();
+				   success = false;
+				   break;
+				}
 		//process stations
 				if(goal->task[i] == "Heating"||goal->task[i]  == "Cleaning"||goal->task[i]  == "Cutting")
 				{
@@ -283,8 +310,10 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					actionlib::SimpleClientGoalState state = ac.getState();
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
+					
 				}
 
 				
@@ -323,9 +352,11 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					actionlib::SimpleClientGoalState state = ac1.getState();
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
 					i++;
+					
 					}
 				}
 				else if(goal->task[i] == "MM2")
@@ -361,8 +392,11 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 					}
 					else
+					{
 					ROS_INFO("Action did not finish before the time out.");
+					}
 					i++;
+					
 					}
 				}
 		//Assembly stations
@@ -386,15 +420,20 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					ROS_INFO("Action finished: %s",state.toString().c_str());
 
 					}
-					else
+					else{
 					ROS_INFO("Action did not finish before the time out.");
+					}
+						
 				}
 		//checks
 					else
 					{
-					spin_thread.join();
+					//spin_thread.join();
 					ROS_INFO("End of known tasks");
-					break;
+					if(i>size)
+						{
+						break;
+						}
 					}
 					
 //common
@@ -414,7 +453,7 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 	as_.setSucceeded(result_);	
 	}		
 	//closing thread from above
-		
+	
   
  }
 };
