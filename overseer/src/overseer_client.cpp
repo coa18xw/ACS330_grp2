@@ -13,7 +13,7 @@
 
 void spinThread()
 {
-	ros::AsyncSpinner spinner(4); // Use 2 threads
+	ros::AsyncSpinner spinner(4); // Use 4 threads
 	spinner.start();
 	ros::waitForShutdown();
 }
@@ -32,9 +32,12 @@ while(ros::ok()){
 
 	boost::thread spin_thread(&spinThread);
 	low_level_controller::ll_client_serverGoal goal;
+
 	bool finished_before_timeout_I;
 	bool finished_before_timeout_O;
 	char colour;
+	bool full = true;
+	std::string XY;
 
 
 	unsigned int microsecond = 1000000;
@@ -42,27 +45,33 @@ while(ros::ok()){
 
 	//goal combined
 	colour = 'r';
-/*
-	for(int i = 0; i =16;i++){
-	if(storageStr[i] = '.')
-{
-dot_pos = i;
-location = 
-}
-	std::string location = {"Full"};
-	ROS_INFO("Storgae full");
-	break;
-	
-	
+
+	for(int i = 0; i <=16;i++){
+	if(storageStr[i] == '.')
+	{
+	dot_pos = i;
+	full = false;
+	i = 16;
+	}
+	else
+	ROS_INFO("checking position %d", i+1);
+	}
+	if(full ==true)
+	{
+		std::string location = {"Full"};
+		ROS_INFO("Storgae full");
+		break;
+	}
 	storageStr[dot_pos]=colour;
 	int temp = dot_pos*5;
 	XY=std::to_string(temp) += ".14";
 	location = {XY};
-	}
+	
+	
 
 	std::vector<std::string> tasksI = col_to_tasks(colour,location);
-*/
-	std::vector<std::string> tasksI = col_to_tasks(colour,"12.19");
+
+	
 	std::vector<std::string> tasksO = assembly_tasks("12.19");
 
 
