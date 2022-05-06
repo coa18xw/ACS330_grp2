@@ -211,10 +211,9 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					{
 					
 					ROS_INFO("End of known tasks");
-					if(i>size)
-						{
+					
 						break;
-						}
+						
 					}
 					
 //common
@@ -430,10 +429,9 @@ ROS_INFO("%s controller: running", controller_name_.c_str());
 					{
 					//spin_thread.join();
 					ROS_INFO("End of known tasks");
-					if(i>size)
-						{
+					
 						break;
-						}
+					
 					}
 					
 //common
