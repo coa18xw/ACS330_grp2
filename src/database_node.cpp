@@ -2,13 +2,18 @@
 **  ACS330-Group 2 Database Node
 **/
 #include <ros/ros.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include <actionlib/server/simple_action_server.h>
+#include <actionlib/client/simple_action_client.h>
 #include <process_actions/processAction.h>
 #include <assembly_actions/assemblyAction.h>
 #include <mm_actions/mmAction.h>
 #include <std_msgs/Int32.h>
 #include <unistd.h>
 
+//Process Stations
 class ProcessAction
 {
 protected:
@@ -28,7 +33,7 @@ as_(nh_, station_id, boost::bind(&ProcessAction::executeCB, this, _1), false), s
 	}
 
 
-
+//Assembly Station
 class AssemblyAction
 {
 protected:
@@ -49,6 +54,7 @@ as_(nh_, station_id, boost::bind(&AssemblyAction::executeCB, this, _1), false), 
 	}
 
 
+//Mobile Manupilator
 class MMAction
 {
 protected:
@@ -73,6 +79,41 @@ as_(nh_, mm_id, boost::bind(&MMAction::executeCB, this, _1), false), mm_name_(mm
 		
 	}
 
+//Overseer
+class Overseer{
+private:
+	
+	ros::NodeHandle n;
+	bool stop;
+	char colour;
+	bool finished_before_timeout_I;
+	bool finished_before_timeout_O;
+	char storageStr[16];
+	char combination[3];
+	bool full;
+	std::string location;
+	int dot_pos;
+	int block_pos;
+	unsigned int microsecond;
+	ros::Subscriber detected;
+	
+
+public:
+	Overseer(std::string overseer_id)
+	{
+	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acI("input", true);
+	actionlib::SimpleActionClient<low_level_controller::ll_client_serverAction> acO("output", true);
+	ROS_INFO("%s: Activated", overseer_id.c_str());
+	detected = n.subscribe("color_detected", 1000, &Overseer::detectionCallback,this);
+		
+
+	char storageStr[16]={'.','.','.','r','.','.','.','.','b','.','.','.','.','.','g','.'};
+	std::string location;
+	int dot_pos;
+	int block_pos;
+
+
+// Callback functions
 void feedbackCallback(const std_msgs::Int32::ConstPtr& feedback)
 {
 	if(feedback->data ==1)
@@ -92,18 +133,43 @@ void executeCB(const assembly_actions::assemblyGoalConstPtr &goal)
 	as_.setSucceeded(result_);	
 	}
 
-int main(int argc, char* argv[])
+void detectionCallback(const std_msgs::Char::ConstPtr& detected)
+{
+	if(detected->data =='r'||detected->data =='b'||detected->data =='g')
+	{
+	colour = detected->data;
+	}
+	else{
+	colour = NULL;
+	}
+}
+
+
+  
+// Here to export the subscribed info to a csv file
+	ofstream outputFile;
+  	ofstream fs
+  	std::string filename = "exampleOutput.csv";
+
+int main(int argc, char** argv[])
 {
   // This must be called before anything else ROS-related
   ros::init(argc, argv, "database_node");
 
   // Create a ROS node handle
   ros::NodeHandle nh;
- 
   
+	fs.open(outputFile,TaskResult);
+	outputFile << "Column A" << "," << "Column B" << "Column C" << std::endl;
+	A= processResult;
+	B= assemblyResult;
+	C= mmResult;	
+	
+	outputFile << A << "," << B << "," << C << std::endl;
+	// close the output file
+	outputFile.close();
 
   // Don't exit the program.
   ros::spin();
   return 0;
 }
-
