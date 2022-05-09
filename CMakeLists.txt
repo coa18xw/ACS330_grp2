@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   assembly_actions
   mm_actions
   actionlib
-  actionlib_msg
+#  actionlib_msg
 )
 
 ## System dependencies are found with CMake's conventions
@@ -44,7 +44,7 @@ find_package(catkin REQUIRED COMPONENTS
 ##     * add a exec_depend tag for "message_runtime"
 ## * In this file (CMakeLists.txt):
 ##   * add "message_generation" and every package in MSG_DEP_SET to
-     find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs genmsg)
+     find_package(catkin REQUIRED COMPONENTS roscpp rospy genmsg std_msgs )
 ##   * add "message_runtime" and every package in MSG_DEP_SET to
      catkin_package(CATKIN_DEPENDS message_runtime)
 ##   * uncomment the add_*_files sections below as needed
@@ -75,10 +75,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
+ generate_messages(
    DEPENDENCIES
    std_msgs
-   actionlib_msgs
+#   actionlib_msgs
 )
 
 ################################################
@@ -113,8 +113,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  # INCLUDE_DIRS include
  #LIBRARIES database
- # CATKIN_DEPENDS roscpp rospy std_msgs message_generation
- # DEPENDS system_lib
+  CATKIN_DEPENDS roscpp rospy std_msgs message_generation
+  DEPENDS system_lib
 )
 
 ###########
