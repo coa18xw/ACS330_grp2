@@ -13,6 +13,8 @@
 #include <std_msgs/Int32.h>
 #include <unistd.h>
 
+using namespace std;
+
 //Process Stations
 class ProcessAction
 {
@@ -146,10 +148,16 @@ void detectionCallback(const std_msgs::Char::ConstPtr& detected)
 
 
   
-// Here to export the subscribed info to a csv file
+
+//example of .txt output
+//ofstream myfile("example.txt", ios::out | ios::binary);
+//myfile << "Writing this to a file.\n";
+//myfile.close();
+
+// Here to export the subscribed info to a csv file	
 	ofstream outputFile;
   	ofstream fs
-  	std::string filename = "exampleOutput.csv";
+  	std::string filename = "TaskResult.csv";
 
 int main(int argc, char** argv[])
 {
@@ -159,11 +167,11 @@ int main(int argc, char** argv[])
   // Create a ROS node handle
   ros::NodeHandle nh;
   
-	fs.open(outputFile,TaskResult);
+	fs.open(outputFile,filename);
 	outputFile << "Column A" << "," << "Column B" << "Column C" << std::endl;
-	A= processResult;
-	B= assemblyResult;
-	C= mmResult;	
+	A= processResult result_.complete;
+	B= assemblyResult result_.complete;
+	C= mmResult result_.complete;	
 	
 	outputFile << A << "," << B << "," << C << std::endl;
 	// close the output file
